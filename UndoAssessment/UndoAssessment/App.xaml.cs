@@ -14,6 +14,7 @@ namespace UndoAssessment
             InitializeComponent();
 
             DependencyService.Register<MockDataStore>();
+            DependencyService.Register<IRequestService, RequestService>();
             MainPage = new AppShell();
         }
 

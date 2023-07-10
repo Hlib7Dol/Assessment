@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UndoAssessment.Views.TabPage"
+             Title="{Binding Title}">
+    <ContentPage.Content>
+        <StackLayout >
+            <Button Text="Show user collect data page"
+                    HorizontalOptions="EndAndExpand"
+                    Command="{Binding OpenUserDataCollectorPageCommand}" />
+            <Label Text="{Binding UserName}" />
+            <Label Text="{Binding UserAge}" />
+            <Button Text="Fail" IsVisible="{Binding IsButtonVisible}" Command="{Binding FailCommand}" />
+            <Button Text="Success" IsVisible="{Binding IsButtonVisible}" Command="{Binding SuccessCommand}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

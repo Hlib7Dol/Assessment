@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UndoAssessment.Views.UserDataCollectPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="User name:"
+                VerticalOptions="Start" 
+                HorizontalOptions="StartAndExpand"
+                Margin="20, 0, 10, 0" />
+            <Entry Text="{Binding UserName}" 
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="Start"
+                Margin="20, 0, 10, 0"/>
+            <Label Text="{Binding UserNameValidation}"
+                TextColor="Red"
+                IsVisible="{Binding IsUserNameValidationVisible}"
+                VerticalOptions="Start" 
+                HorizontalOptions="CenterAndExpand" />
+            <Label Text="User age:"
+                VerticalOptions="Start"
+                HorizontalOptions="StartAndExpand"
+                Margin="20, 0, 10, 0" />
+            <Entry Text="{Binding UserAge}"
+                VerticalOptions="Start" 
+                HorizontalOptions="FillAndExpand"
+                Margin="20, 0, 10, 0" />
+            <Label Text="{Binding UserAgeValidation}"
+                IsVisible="{Binding IsUserAgeValidationVisible}"
+                TextColor="Red"
+                VerticalOptions="Start" 
+                HorizontalOptions="CenterAndExpand" />
+            <Button Text="Submit" VerticalOptions="EndAndExpand" Command="{Binding SubmitCommand}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
