@@ -1,6 +1,5 @@
 ﻿using UndoAssessment.ViewModels;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace UndoAssessment.Views
 {
@@ -10,6 +9,21 @@ namespace UndoAssessment.Views
         {
             InitializeComponent();
             this.BindingContext = new UserDataCollectViewModel();
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            if (!(this.BindingContext is UserDataCollectViewModel model))
+            {
+                return false;
+            }
+
+            if(model.BackButtonCommand.CanExecute(this))
+            {
+                model.BackButtonCommand.Execute(this);
+            }
+
+            return base.OnBackButtonPressed();
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using MvvmHelpers.Commands;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using UndoAssessment.EventHandlers;
 using UndoAssessment.Models;
 using UndoAssessment.Services;
 using UndoAssessment.Views;
@@ -9,7 +8,7 @@ using Xamarin.Forms;
 
 namespace UndoAssessment.ViewModels
 {
-    public class TabViewModel : BaseViewModel
+    public class TabViewModel : BasePageResultViewModel
     {
         private readonly IRequestService _requestService;
 
@@ -46,15 +45,8 @@ namespace UndoAssessment.ViewModels
             this._requestService = DependencyService.Resolve<IRequestService>();
             this.FailCommand = new AsyncCommand(ExecuteFailRequestAsync);
             this.SuccessCommand = new AsyncCommand(ExecuteSuccessRequestAsync);
-            this.OpenUserDataCollectorPageCommand = new AsyncCommand(OpenUserDataCollectorPage);
+            this.OpenUserDataCollectorPageCommand = new AsyncCommand(OpenUserDataCollectorPageAsync);
             this.IsButtonVisible = true;
-
-            UserDataCollectViewModel.OnPageResultEvent += this.OnPageResult;
-        }
-
-        ~TabViewModel()
-        {
-            UserDataCollectViewModel.OnPageResultEvent -= this.OnPageResult;
         }
 
         public async Task ExecuteFailRequestAsync()
@@ -64,7 +56,7 @@ namespace UndoAssessment.ViewModels
             var message = $"{response.Message} at {response.Date}";
             var alertData = this.PrepareShowData(response.ErrorCode.ToString(), message);
 
-            await this.ShowAlert(alertData.title, alertData.message);
+            await this.ShowAlertAsync(alertData.title, alertData.message);
         }
 
         public async Task ExecuteSuccessRequestAsync()
@@ -74,32 +66,13 @@ namespace UndoAssessment.ViewModels
             var message = $"{response.Message} at {response.Date}";
             var alertData = this.PrepareShowData(response.ErrorCode.ToString(), message);
 
-            await this.ShowAlert(alertData.title, alertData.message);
+            await this.ShowAlertAsync(alertData.title, alertData.message);
         }
 
-        public async Task OpenUserDataCollectorPage()
+        public async Task OpenUserDataCollectorPageAsync()
         {
-            var userData = new UserData();
-
-            var task = Shell.Current.GoToAsync(nameof(UserDataCollectPage));
-
-            await task;
-        }
-
-        private (string title, string message) PrepareShowData(string titleData, string messageData)
-        {
-            return ($"Error code - {titleData}", messageData);
-        }
-
-        private async Task ShowAlert(string alertTitle, string alertMessage)
-        {
-            await Shell.Current.DisplayAlert(alertTitle, alertMessage, "Cancel");
-        }
-
-        private void OnPageResult(object sender, PageResultEventArg e)
-        {
-            UserData userData = e.Result as UserData;
-            if(userData == null)
+            var userData = await base.ShowWithResultAsync<UserData>(nameof(UserDataCollectPage));
+            if (userData == null)
             {
                 return;
             }
@@ -107,6 +80,16 @@ namespace UndoAssessment.ViewModels
             IsButtonVisible = false;
             this.UserName = userData.UserName;
             this.UserAge = userData.UserAge.ToString();
+        }
+
+        private (string title, string message) PrepareShowData(string titleData, string messageData)
+        {
+            return ($"Error code - {titleData}", messageData);
+        }
+
+        private async Task ShowAlertAsync(string alertTitle, string alertMessage)
+        {
+            await Shell.Current.DisplayAlert(alertTitle, alertMessage, "Cancel");
         }
     }
 }

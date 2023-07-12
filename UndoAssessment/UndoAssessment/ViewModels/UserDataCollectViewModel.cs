@@ -1,22 +1,19 @@
 ﻿using MvvmHelpers.Commands;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using UndoAssessment.EventHandlers;
 using UndoAssessment.Models;
 using Xamarin.Forms;
 
 namespace UndoAssessment.ViewModels
 {
-    public class UserDataCollectViewModel : BaseViewModel
+    public class UserDataCollectViewModel : BasePageResultViewModel
     {
-        public delegate void Delegate(object sender, PageResultEventArg e);
-        public static event Delegate OnPageResultEvent;
-
         private const string AgeFieldEmptyValidation = "User age field cannot be empty";
         private const string AgeFieldMustBeIntegersValidation = "Age must consist only of integers";
         private const string NameFieldEmptyValidation = "User name field cannot be empty";
 
         public ICommand SubmitCommand { get; }
+        public ICommand BackButtonCommand { get; }
 
         private string _userName;
         public string UserName
@@ -79,10 +76,11 @@ namespace UndoAssessment.ViewModels
 
         public UserDataCollectViewModel()
         {
-            this.SubmitCommand = new AsyncCommand(Submit);
+            this.SubmitCommand = new AsyncCommand(SubmitAsync);
+            this.BackButtonCommand = new AsyncCommand(BackAsync);
         }
 
-        public async Task Submit()
+        public async Task SubmitAsync()
         {
             if(string.IsNullOrWhiteSpace(this.UserName))
             {
@@ -129,9 +127,14 @@ namespace UndoAssessment.ViewModels
                 return;
             }
 
-            OnPageResultEvent.Invoke(this, new PageResultEventArg(userData));
+            await base.SetPageResultAsync(userData);
 
             await Shell.Current.GoToAsync("..");
+        }
+
+        private async Task BackAsync()
+        {
+            await base.SetPageResultAsync(default(UserData));
         }
     }
 }
